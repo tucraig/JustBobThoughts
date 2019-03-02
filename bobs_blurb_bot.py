@@ -24,6 +24,11 @@ load_dotenv(dotenv_path)
 TWITTER_USER = os.getenv('TWITTER_USER')
 TWITTER_PASS = os.getenv('TWITTER_PASS')
 
+try:
+    os.mkdir("clips")
+except Exception as e:
+    pass # directory already exists
+
 with requests.Session() as session:
     url = "https://www.youtube.com/user/BobRossInc/playlists?shelf_id=7&view=50&sort=dd"
     session.get(url)
