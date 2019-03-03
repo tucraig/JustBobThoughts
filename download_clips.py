@@ -39,7 +39,7 @@ def download_clips(selected_season = None):
                     clip_titles = []
                     vid = YouTube(episode_url)
                     vid.streams.filter(subtype='mp4').first().download()
-                    episode_filename = "{}.mp4".format(vid.title.replace(".",""))
+                    episode_filename = "{}.mp4".format(vid.title.replace(".","").replace("'",""))
                     xml_caps = vid.captions.get_by_language_code('en').xml_captions
                     root = ET.fromstring(xml_caps)
                     for child in root:
