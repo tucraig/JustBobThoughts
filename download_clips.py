@@ -30,7 +30,7 @@ def download_clips(selected_season = None):
         session.get(url)
         sauce = session.get(url)
         soup = bs(sauce.content,'html')
-        for season,playlist in enumerate(soup.find_all('h3',{'class':'yt-lockup-title'})):
+        for season,playlist in enumerate(tqdm(soup.find_all('h3',{'class':'yt-lockup-title'}))):
             if season == selected_season or selected_season == None:
                 season_url = "https://www.youtube.com/{}".format(playlist.find('a').get('href'))
                 pl = Playlist(season_url)
@@ -48,12 +48,15 @@ def download_clips(selected_season = None):
                         text = child.text
                         if "(" in text:
                             text = text.replace("(","").replace(")","").replace(" ","_")
-                            clip = VideoFileClip(episode_filename)
-                            clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S{}E{}-{}-{}.mp4".format(season+1,episode+1,text,clip_titles.count(text)),fps=30,codec='libx264')
-                            # clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.gif".format(episode+1,text,clip_titles.count(text)),fps=30,codec='gif')
-                            clip_titles.append(text)
-                            clip.reader.close()
-                            clip.audio.reader.close_proc()
+                            try:
+                                clip = VideoFileClip(episode_filename)
+                                clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S{}E{}-{}-{}.mp4".format(season+1,episode+1,text,clip_titles.count(text)),fps=30,codec='libx264')
+                                # clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.gif".format(episode+1,text,clip_titles.count(text)),fps=30,codec='gif')
+                                clip_titles.append(text)
+                                clip.reader.close()
+                                clip.audio.reader.close_proc()
+                            except KeyError as e:
+                                print("Could not get clip {}.".format(text))
                     time.sleep(3) # give clip audio/reader enough time to close
                     os.remove(episode_filename) # delete episode file
 
