@@ -30,7 +30,7 @@ def tweet(file_name):
     season = clip_name.split("-")[0]
     time_stamp = clip_name.split("-")[1].replace("_",":")
     title = clip_name.split("-")[2].replace("_"," ")
-    text = "({})\n-{}@{} #BobRossThoughts".format(title,season,time_stamp)
+    text = "({})\n{}@{} #BobRossThoughts".format(title,season,time_stamp)
     upload_result = api.upload_chunked('{}'.format(file_name))
     api.update_status(status=text, media_ids=[upload_result.media_id_string])
     print("Tweeted status {}".format(text))
