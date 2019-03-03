@@ -47,6 +47,7 @@ def download_clips(selected_season = None):
                         dur = child.attrib["dur"]
                         text = child.text
                         if "(" in text:
+                            os.system('cls' if os.name == 'nt' else 'clear')
                             text = text.replace("(","").replace(")","").replace(" ","_")
                             try:
                                 clip = VideoFileClip(episode_filename)
@@ -55,7 +56,7 @@ def download_clips(selected_season = None):
                                 clip_titles.append(text)
                                 clip.reader.close()
                                 clip.audio.reader.close_proc()
-                            except KeyError as e:
+                            except:
                                 print("Could not get clip {}.".format(text))
                     time.sleep(3) # give clip audio/reader enough time to close
                     os.remove(episode_filename) # delete episode file
