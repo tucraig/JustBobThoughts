@@ -49,7 +49,7 @@ def download_clips(selected_season = None):
                         if "(" in text:
                             text = text.replace("(","").replace(")","").replace(" ","_")
                             clip = VideoFileClip(episode_filename)
-                            clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.mp4".format(episode+1,text,clip_titles.count(text)),fps=30,codec='libx264')
+                            clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S{}E{}-{}-{}.mp4".format(season+1,episode+1,text,clip_titles.count(text)),fps=30,codec='libx264')
                             # clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.gif".format(episode+1,text,clip_titles.count(text)),fps=30,codec='gif')
                             clip_titles.append(text)
                             clip.reader.close()
