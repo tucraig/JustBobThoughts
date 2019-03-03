@@ -6,7 +6,6 @@ just bob sayings  -> all of the text that happens in a bob ross show
 '''
 import os, sys, time, glob, random, shutil
 from tqdm import tqdm
-from dotenv import load_dotenv
 
 from pytube import YouTube, Playlist
 
@@ -18,31 +17,7 @@ from bs4 import BeautifulSoup as bs
 
 import tweepy
 
-# Create .env file path.
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-# Load file from the path.
-load_dotenv(dotenv_path)
-
-# Accessing variables.
-CONSUMER_KEY = os.getenv('CONSUMER_KEY')
-CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
-ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
-ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
-# OAuth process, using the keys and tokens
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
-# Creation of the actual interface, using authentication
-api = tweepy.API(auth)
-
-def tweet(clip_name):
-    season = clip_name.split("-")[0] 
-    title = clip_name.split("-")[1].replace("_"," ")
-    text = "({})\n-{} #JustBobRossThoughts".format(title,season)
-    upload_result = api.upload_chunked('clips/{}'.format(clip_name))
-    api.update_status(status=text, media_ids=[upload_result.media_id_string])
-    #api.update_status(filename='clips/{}'.format(clip_name), status=text, file='{}'.format(clip_name))
-
-def main():
+def download_clips(selected_season = None):
     try:
         shutil.rmtree("clips")
     except Exception as e:
@@ -56,7 +31,7 @@ def main():
         sauce = session.get(url)
         soup = bs(sauce.content,'html')
         for season,playlist in enumerate(soup.find_all('h3',{'class':'yt-lockup-title'})):
-            if season == 0:
+            if season == selected_season or selected_season == None:
                 season_url = "https://www.youtube.com/{}".format(playlist.find('a').get('href'))
                 pl = Playlist(season_url)
                 pl.populate_video_urls()
@@ -75,15 +50,13 @@ def main():
                             text = text.replace("(","").replace(")","").replace(" ","_")
                             clip = VideoFileClip(episode_filename)
                             clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.mp4".format(episode+1,text,clip_titles.count(text)),fps=30,codec='libx264')
-                            clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.gif".format(episode+1,text,clip_titles.count(text)),fps=30,codec='gif')
+                            # clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.gif".format(episode+1,text,clip_titles.count(text)),fps=30,codec='gif')
                             clip_titles.append(text)
                             clip.reader.close()
                             clip.audio.reader.close_proc()
                     time.sleep(3) # give clip audio/reader enough time to close
                     os.remove(episode_filename) # delete episode file
 
-if __name__ == '__main__':
-    main()
-    filenames = [i.split("\\")[-1] for i in glob.glob("clips/*.mp4")]
-    chosen_file = random.choice(filenames)
-    tweet(chosen_file)
+if __name__ ==  '__main__':
+    download_clips()
+    print("Finished downloading clips.")
