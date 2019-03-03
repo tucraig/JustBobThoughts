@@ -57,7 +57,6 @@ def download_clips(selected_season = None):
                                 clip.audio.reader.close_proc()
                             except:
                                 print("Could not get clip {}.".format(text))
-                            os.system('cls' if os.name == 'nt' else 'clear')
                     time.sleep(3) # give clip audio/reader enough time to close
                     os.remove(episode_filename) # delete episode file
 
