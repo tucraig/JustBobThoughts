@@ -4,11 +4,15 @@ just bob sayings  -> all of the text that happens in a bob ross show
 
 @author Tucker Craig (twitter.com/btuckerc)
 '''
-from __future__ import unicode_literals
 import os, sys, time, glob, random
 from dotenv import load_dotenv
 
 import tweepy
+
+# Create .env file path.
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+# Load file from the path.
+load_dotenv(dotenv_path)
 
 # Accessing variables.
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
