@@ -4,6 +4,7 @@ just bob sayings  -> all of the text that happens in a bob ross show
 
 @author Tucker Craig (twitter.com/btuckerc)
 '''
+from __future__ import unicode_literals
 import os, sys, time, glob, random
 from dotenv import load_dotenv
 
