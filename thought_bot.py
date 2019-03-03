@@ -27,13 +27,13 @@ def tweet(clip_name):
     text = "({})\n-{} #JustBobRossThoughts".format(title,season)
     upload_result = api.upload_chunked('{}'.format(clip_name))
     api.update_status(status=text, media_ids=[upload_result.media_id_string])
+    print("Tweeted status {}".format(text))
     #api.update_status(filename='clips/{}'.format(clip_name), status=text, file='{}'.format(clip_name))
 
 if __name__ == '__main__':
     filenames = [i.split("\\")[-1] for i in glob.glob("clips/*.mp4")]
     if len(filenames) > 1:
         chosen_file = random.choice(filenames)
-        print(chosen_file)
         tweet(chosen_file)
         os.remove(chosen_file)
     else:
