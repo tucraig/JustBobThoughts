@@ -32,6 +32,7 @@ if __name__ == '__main__':
     filenames = [i.split("\\")[-1] for i in glob.glob("clips/*.mp4")]
     if len(filenames) > 1:
         chosen_file = random.choice(filenames)
+        print(chosen_file)
         tweet(chosen_file)
         os.remove(chosen_file)
     else:
