@@ -37,7 +37,11 @@ def download_clips(selected_season = None):
                 pl.populate_video_urls()
                 for episode,episode_url in enumerate(tqdm(pl.video_urls)):
                     clip_titles = []
-                    vid = YouTube(episode_url)
+                    try:
+                        vid = YouTube(episode_url)
+                    except:
+                        time.sleep(3)
+                        vid = YouTube(episode_url)
                     vid.streams.filter(subtype='mp4').first().download()
                     episode_filename = "{}.mp4".format(vid.title.replace(".","").replace("'",""))
                     xml_caps = vid.captions.get_by_language_code('en').xml_captions
