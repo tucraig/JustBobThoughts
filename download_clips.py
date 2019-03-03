@@ -41,9 +41,13 @@ def download_clips(selected_season = None):
                         vid = YouTube(episode_url)
                         vid.streams.filter(subtype='mp4').first().download()
                     except:
-                        time.sleep(3)
-                        vid = YouTube(episode_url)
-                        vid.streams.filter(subtype='mp4').first().download()
+                        try:
+                            time.sleep(3)
+                            vid = YouTube(episode_url)
+                            vid.streams.filter(subtype='mp4').first().download()
+                        except:
+                            print("Couldn't download season {}, skipping season.".format(season+1))
+                            continue # skip season
                     episode_filename = "{}.mp4".format(vid.title.replace(".","").replace("'",""))
                     xml_caps = vid.captions.get_by_language_code('en').xml_captions
                     root = ET.fromstring(xml_caps)
@@ -55,15 +59,20 @@ def download_clips(selected_season = None):
                             text = text.replace("(","").replace(")","").replace(" ","_")
                             try:
                                 clip = VideoFileClip(episode_filename)
-                                clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S{}E{}-{}-{}.mp4".format(season+1,episode+1,text,clip_titles.count(text)),fps=30,codec='libx264')
+                                time_stamp=time.strftime("%M_%S", time.gmtime(float(start)))
+                                clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S{}E{}-{}-{}-{}.mp4".format(season+1,episode+1,time_stamp,text,clip_titles.count(text)),fps=30,codec='libx264')
                                 # clip.subclip(float(start),float(start) + float(dur)).write_videofile("clips/S1E{}-{}-{}.gif".format(episode+1,text,clip_titles.count(text)),fps=30,codec='gif')
+                                print(time_stamp)
                                 clip_titles.append(text)
                                 clip.reader.close()
                                 clip.audio.reader.close_proc()
                             except:
                                 print("Could not get clip {}.".format(text))
                     time.sleep(3) # give clip audio/reader enough time to close
-                    os.remove(episode_filename) # delete episode file
+                    try:
+                        os.remove(episode_filename) # delete episode file
+                    except:
+                        print("Couldn't delete episode file {}, please do so manually.".format(episode_filename))
 
 if __name__ ==  '__main__':
     download_clips()

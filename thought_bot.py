@@ -19,10 +19,6 @@ CONSUMER_KEY = os.getenv('CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
 ACCESS_TOKEN_KEY = os.getenv('ACCESS_TOKEN_KEY')
 ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
-print(CONSUMER_KEY)
-print(CONSUMER_SECRET)
-print(ACCESS_TOKEN_KEY)
-print(ACCESS_TOKEN_SECRET)
 # OAuth process, using the keys and tokens
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
@@ -30,9 +26,11 @@ auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth)
 
 def tweet(clip_name):
-    season = clip_name.split("-")[0] 
-    title = clip_name.split("-")[1].replace("_"," ")
-    text = "({})\n-{} #JustBobRossThoughts".format(title,season)
+    clip_name = clip_name.split("/")[-1]
+    season = clip_name.split("-")[0]
+    time_stamp = clip_name.split("-")[1].replace("_",":")
+    title = clip_name.split("-")[2].replace("_"," ")
+    text = "({})\n-{}@{} #JustBobRossThoughts".format(title,time_stamp,season)
     upload_result = api.upload_chunked('{}'.format(clip_name))
     api.update_status(status=text, media_ids=[upload_result.media_id_string])
     print("Tweeted status {}".format(text))
