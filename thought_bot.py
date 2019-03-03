@@ -24,7 +24,7 @@ def tweet(clip_name):
     season = clip_name.split("-")[0] 
     title = clip_name.split("-")[1].replace("_"," ")
     text = "({})\n-{} #JustBobRossThoughts".format(title,season)
-    upload_result = api.upload_chunked('clips/{}'.format(clip_name))
+    upload_result = api.upload_chunked('{}'.format(clip_name))
     api.update_status(status=text, media_ids=[upload_result.media_id_string])
     #api.update_status(filename='clips/{}'.format(clip_name), status=text, file='{}'.format(clip_name))
 
