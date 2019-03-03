@@ -25,13 +25,13 @@ auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
 # Creation of the actual interface, using authentication
 api = tweepy.API(auth)
 
-def tweet(clip_name):
-    clip_name = clip_name.split("/")[-1]
+def tweet(file_name):
+    clip_name = file_name.split("/")[-1]
     season = clip_name.split("-")[0]
     time_stamp = clip_name.split("-")[1].replace("_",":")
     title = clip_name.split("-")[2].replace("_"," ")
     text = "({})\n-{}@{} #JustBobRossThoughts".format(title,time_stamp,season)
-    upload_result = api.upload_chunked('{}'.format(clip_name))
+    upload_result = api.upload_chunked('{}'.format(file_name))
     api.update_status(status=text, media_ids=[upload_result.media_id_string])
     print("Tweeted status {}".format(text))
     #api.update_status(filename='clips/{}'.format(clip_name), status=text, file='{}'.format(clip_name))
